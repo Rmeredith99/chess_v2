@@ -1,13 +1,13 @@
 from chess import WHITE, BLACK, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+from src.Constants import Constants
 
-import Constants
 import pygame
 
 class IconProvider:
 
     def __init__(self) -> None:
-        self.loadIcons()
-        self.scaleIcons()
+        self.__loadIcons()
+        self.__scaleIcons()
 
         self.pieceIconMap : dict[tuple[bool, int], pygame.Surface] = {
             (WHITE, PAWN): self.WHITE_PAWN_ICON,
@@ -27,7 +27,7 @@ class IconProvider:
     def getIcon(self, pieceType : int, color : bool) -> pygame.Surface:
         return self.pieceIconMap[(color, pieceType)]
 
-    def loadIcons(self) -> None:
+    def __loadIcons(self) -> None:
         self.WHITE_PAWN_ICON = pygame.image.load("icons/white_pawn.png")
         self.WHITE_KNIGHT_ICON = pygame.image.load("icons/white_knight.png")
         self.WHITE_BISHOP_ICON = pygame.image.load("icons/white_bishop.png")
@@ -42,7 +42,7 @@ class IconProvider:
         self.BLACK_QUEEN_ICON = pygame.image.load("icons/black_queen.png")
         self.BLACK_KING_ICON = pygame.image.load("icons/black_king.png")
 
-    def scaleIcons(self) -> None:
+    def __scaleIcons(self) -> None:
         iconSize = int(Constants.BOARD_SIZE / Constants.NUM_TILES * Constants.ICON_RATIO)
 
         self.WHITE_PAWN_ICON = pygame.transform.smoothscale(self.WHITE_PAWN_ICON, (iconSize, iconSize))
@@ -58,3 +58,4 @@ class IconProvider:
         self.BLACK_ROOK_ICON = pygame.transform.smoothscale(self.BLACK_ROOK_ICON, (iconSize, iconSize))
         self.BLACK_QUEEN_ICON = pygame.transform.smoothscale(self.BLACK_QUEEN_ICON, (iconSize, iconSize))
         self.BLACK_KING_ICON = pygame.transform.smoothscale(self.BLACK_KING_ICON, (iconSize, iconSize))
+        
