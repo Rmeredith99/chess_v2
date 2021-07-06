@@ -1,7 +1,9 @@
 from random import randint
 from src.ai.ExampleAI import ExampleAI
+from src.ai.ryan.MiniMaxAI import MiniMaxAI
 from src.Constants import Constants
 from src.ui.Gui import Gui
+from src.Timer import Timer
 
 import chess
 import pygame
@@ -15,6 +17,7 @@ class Game:
         self.gameOverStatus = None
         self.gameOverReason = None
         self.gui = Gui()
+        self.timer = Timer(0.5, 0)
         self.players = 2
         self.humanColor = None
         self.halfTurnNumber = 1
@@ -34,13 +37,18 @@ class Game:
         self.newGameScreen = True
         self.gameOverScreen = False
 
-        # Change AI instantion here to swap out AIs
-        self.ai = ExampleAI()
+        # Change AI instantiation here to swap out AIs
+        self.aiWhite = MiniMaxAI(2)
+        self.aiBlack = ExampleAI()
 
     def play(self) -> None:
         while self.run:
             if self.__isComputerTurn() and not self.gameOver:
-                move, log = self.ai.getMove(self.board)
+                if self.board.turn == chess.WHITE:
+                    move, log = self.aiWhite.getMove(self.board, self.timer)
+                else:
+                    move, log = self.aiBlack.getMove(self.board, self.timer)
+                self.timer.updateTime(self.board.turn)
                 self.aiLogs.append(log)
                 self.board.push(move)
                 if self.lastMoveStart != None and self.lastMoveEnd != None:
@@ -88,6 +96,7 @@ class Game:
                                 if move.promotion != None:
                                     self.promotionPending = True
                                 elif move in self.board.legal_moves:
+                                    self.timer.updateTime(self.board.turn)
                                     self.board.push(move)
                                     if self.lastMoveStart != None and self.lastMoveEnd != None:
                                         self.lastMoves.append((self.lastMoveStart, self.lastMoveEnd))
@@ -102,6 +111,7 @@ class Game:
 
                     if self.promotionPending and self.promotionPiece != None:
                         move.promotion = self.promotionPiece
+                        self.timer.updateTime(self.board.turn)
                         self.board.push(move)
                         if self.lastMoveStart != None and self.lastMoveEnd != None:
                             self.lastMoves.append((self.lastMoveStart, self.lastMoveEnd))
@@ -118,22 +128,28 @@ class Game:
                     else:
                         self.checkSquare = None
 
-                    # Check for board-based game over. Avoid this logic for UI-based game over (i.e. resign button).
-                    if self.board.is_game_over() and not self.gameOver:
-                        self.gameOver = True
-                        self.gameOverStatus = self.board.outcome().winner
-                        self.gameOverScreen = True
-                        termination = self.board.outcome().termination
-                        if termination == chess.Termination.CHECKMATE:
-                            self.gameOverReason = "Checkmate"
-                        elif termination == chess.Termination.STALEMATE:
-                            self.gameOverReason = "Stalemate"
-                        elif termination == chess.Termination.INSUFFICIENT_MATERIAL:
-                            self.gameOverReason = "Insufficient Material"
-                        elif termination == chess.Termination.SEVENTYFIVE_MOVES:
-                            self.gameOverReason = "75 Move Rule"
-                        elif termination == chess.Termination.FIVEFOLD_REPETITION:
-                            self.gameOverReason = "5-Fold Repition"
+            if (color := self.timer.isOutOfTime() != None and not self.gameOver):
+                self.gameOver = True
+                self.gameOverStatus = not color
+                self.gameOverReason = "No Time Remaining"
+                self.gameOverScreen = True
+
+            # Check for board-based game over. Avoid this logic for UI-based game over (i.e. resign button).
+            if self.board.is_game_over() and not self.gameOver:
+                self.gameOver = True
+                self.gameOverStatus = self.board.outcome().winner
+                self.gameOverScreen = True
+                termination = self.board.outcome().termination
+                if termination == chess.Termination.CHECKMATE:
+                    self.gameOverReason = "Checkmate"
+                elif termination == chess.Termination.STALEMATE:
+                    self.gameOverReason = "Stalemate"
+                elif termination == chess.Termination.INSUFFICIENT_MATERIAL:
+                    self.gameOverReason = "Insufficient Material"
+                elif termination == chess.Termination.SEVENTYFIVE_MOVES:
+                    self.gameOverReason = "75 Move Rule"
+                elif termination == chess.Termination.FIVEFOLD_REPETITION:
+                    self.gameOverReason = "5-Fold Repition"
 
             if self.changed:
                 highlightSquares = [self.lastMoveStart, self.lastMoveEnd, self.startSquare]
@@ -161,10 +177,11 @@ class Game:
         return self.board.turn
 
     def __isComputerTurn(self) -> bool:
-        return self.players == 1 and self.getTurnColor() != self.humanColor
+        return self.players < 2 and self.getTurnColor() != self.humanColor
 
     def newGame(self, players : int, humanColor : chess.Color = None) -> None:
         self.board = chess.Board()
+        self.timer.restart()
         self.gameOver = False
         self.gameOverStatus = None
         self.players = players
@@ -192,10 +209,10 @@ class Game:
     def isHumanMove(self) -> bool:
         return self.players == 2 or self.board.turn == self.humanColor
 
-    def writeLog(self, log : list[str]) -> None:
+    def writeLog(self, log : "list[str]") -> None:
         self.aiLogMap.append(log)
 
-    def getCurrentLog(self) -> list[str]:
+    def getCurrentLog(self) -> "list[str]":
         try:
             return self.aiLogs[len(self.aiLogs) - 1]
         except:

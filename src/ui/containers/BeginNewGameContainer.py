@@ -17,7 +17,7 @@ def getBeginNewGameContainer(game) -> Container:
 
     textFont = pygame.font.SysFont("Arial", Constants.NEW_GAME_SELECTION_BUTTON_TEXT_SIZE)
     buttonXPosition = (Constants.NEW_GAME_SELECTION_CONTAINER_WIDTH - Constants.NEW_GAME_SELECTION_BUTTON_WIDTH) // 2
-    buttonYOffset = (Constants.NEW_GAME_SELECTION_CONTAINER_HEIGHT - 4 * Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT) // 5
+    buttonYOffset = (Constants.NEW_GAME_SELECTION_CONTAINER_HEIGHT - 5 * Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT) // 6
     
     twoPlayerButton = Container(Constants.NEW_GAME_SELECTION_BUTTON_WIDTH, Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT)
     twoPlayerButton.setFillColor(Constants.NEW_GAME_SELECTION_BUTTON_COLOR)
@@ -50,5 +50,13 @@ def getBeginNewGameContainer(game) -> Container:
         game.newGame(1)
     onePlayerRandomButton.setOnClickFunction(onePlayerRandomFunction)
     newGameContainer.addContainer(onePlayerRandomButton, buttonXPosition, 3 * Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT + 4 * buttonYOffset)
+
+    zeroPlayerRandomButton = Container(Constants.NEW_GAME_SELECTION_BUTTON_WIDTH, Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT)
+    zeroPlayerRandomButton.setFillColor(Constants.NEW_GAME_SELECTION_BUTTON_COLOR)
+    zeroPlayerRandomButton.setText(["Compete AIs"], textFont, Constants.WHITE, (0, 0), centered = True)
+    def zeroPlayerRandomFunction(game):
+        game.newGame(0)
+    zeroPlayerRandomButton.setOnClickFunction(zeroPlayerRandomFunction)
+    newGameContainer.addContainer(zeroPlayerRandomButton, buttonXPosition, 4 * Constants.NEW_GAME_SELECTION_BUTTON_HEIGHT + 5 * buttonYOffset)
 
     return newGameContainer

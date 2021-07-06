@@ -1,5 +1,6 @@
 from random import randint
 from src.ai.AIBase import AIBase
+from src.Timer import Timer
 
 import chess
 
@@ -8,7 +9,7 @@ class ExampleAI(AIBase):
     def __init__(self):
         pass
 
-    def getMove(self, board : chess.Board) -> tuple[chess.Move, list[str]]:
+    def getMove(self, board : chess.Board, timer : Timer) -> "tuple[chess.Move, list[str]]":
         possibleMoves = list(board.legal_moves)
         randomMove = possibleMoves[randint(0, len(possibleMoves) - 1)]
         logMessage = [

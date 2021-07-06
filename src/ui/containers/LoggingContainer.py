@@ -4,7 +4,7 @@ from src.ui.containers.Container import Container
 import pygame
 
 def getLoggingContainers(game) -> Container:
-    currentlyUsedHeight = Constants.TURN_CONTAINER_HEIGHT + Constants.UNDO_CONTAINER_HEIGHT + Constants.RESIGN_CONTAINER_HEIGHT + 4 * Constants.BUTTON_OFFSET
+    currentlyUsedHeight = Constants.TURN_CONTAINER_HEIGHT + Constants.UNDO_CONTAINER_HEIGHT + Constants.RESIGN_CONTAINER_HEIGHT + 4 * Constants.BUTTON_OFFSET + Constants.TIMER_HEIGHT
     xPosition = Constants.LOGGING_CONTAINER_BUFFER
     yPosition = Constants.TURN_CONTAINER_HEIGHT + Constants.UNDO_CONTAINER_HEIGHT + 2 * Constants.BUTTON_OFFSET
 

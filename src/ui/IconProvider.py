@@ -9,7 +9,7 @@ class IconProvider:
         self.__loadIcons()
         self.__scaleIcons()
 
-        self.pieceIconMap : dict[tuple[bool, int], pygame.Surface] = {
+        self.pieceIconMap : "dict[tuple[bool, int], pygame.Surface]" = {
             (WHITE, PAWN): self.WHITE_PAWN_ICON,
             (WHITE, KNIGHT): self.WHITE_KNIGHT_ICON,
             (WHITE, BISHOP): self.WHITE_BISHOP_ICON,

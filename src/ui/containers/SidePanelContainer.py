@@ -21,6 +21,25 @@ def getSidePanelContainer(game) -> Container:
     turnContainer.setText([turnText], turnTextFont, turnTextColor, (0, 0), centered = True)
     sidePanelContainer.addContainer(turnContainer, 0, 0)
 
+    timerContainerWhite = Container(Constants.SIDE_PANEL_WIDTH // 2, Constants.TIMER_HEIGHT)
+    timerContainerWhite.setFillColor(Constants.WHITE)
+    timerTextFont = pygame.font.SysFont("Arial", Constants.TIMER_FONT_SIZE)
+    timerContainerWhite.setText([game.timer.toString(True)], timerTextFont, Constants.BLACK, (0, 0), centered = True)
+    sidePanelContainer.addContainer(
+        timerContainerWhite,
+        0,
+        Constants.TURN_CONTAINER_HEIGHT
+    )
+
+    timerContainerWhite = Container(Constants.SIDE_PANEL_WIDTH // 2, Constants.TIMER_HEIGHT)
+    timerContainerWhite.setFillColor(Constants.BLACK)
+    timerContainerWhite.setText([game.timer.toString(False)], timerTextFont, Constants.WHITE, (0, 0), centered = True)
+    sidePanelContainer.addContainer(
+        timerContainerWhite,
+        Constants.SIDE_PANEL_WIDTH // 2,
+        Constants.TURN_CONTAINER_HEIGHT
+    )
+
     buttonWidth = (Constants.SIDE_PANEL_WIDTH - 3 * Constants.BUTTON_OFFSET) // 2
 
     flipBoardContainer = Container(buttonWidth, Constants.FLIP_BOARD_CONTAINER_HEIGHT)
@@ -34,7 +53,7 @@ def getSidePanelContainer(game) -> Container:
     sidePanelContainer.addContainer(
         flipBoardContainer, 
         Constants.BUTTON_OFFSET, 
-        Constants.TURN_CONTAINER_HEIGHT + Constants.BUTTON_OFFSET
+        Constants.TURN_CONTAINER_HEIGHT + Constants.TIMER_HEIGHT + Constants.BUTTON_OFFSET
     )
 
     undoMoveContainer = Container(buttonWidth, Constants.FLIP_BOARD_CONTAINER_HEIGHT)
@@ -42,7 +61,7 @@ def getSidePanelContainer(game) -> Container:
     undoTextFont = pygame.font.SysFont("Arial", Constants.UNDO_TEXT_SIZE)
     undoMoveContainer.setText(["Undo Move"], undoTextFont, Constants.WHITE, (0, 0), centered = True)
     def undoMoveFunction(game):
-        if not game.newGameScreen and not game.gameOverScreen:
+        if not game.newGameScreen and not game.gameOverScreen and game.players > 0:
             try:
                 _ = game.board.pop()
                 game.halfTurnNumber -= 1
@@ -51,6 +70,8 @@ def getSidePanelContainer(game) -> Container:
                 newLastStart, newLastEnd = game.lastMoves.pop()
                 game.lastMoveStart = newLastStart
                 game.lastMoveEnd = newLastEnd
+                if game.players == 1:
+                    _ = game.aiLogs.pop()
                 if not game.isHumanMove():
                     _ = game.board.pop()
                     game.halfTurnNumber -= 1
@@ -73,7 +94,7 @@ def getSidePanelContainer(game) -> Container:
     sidePanelContainer.addContainer(
         undoMoveContainer, 
         Constants.BUTTON_OFFSET * 2 + buttonWidth, 
-        Constants.TURN_CONTAINER_HEIGHT + Constants.BUTTON_OFFSET
+        Constants.TURN_CONTAINER_HEIGHT + Constants.TIMER_HEIGHT + Constants.BUTTON_OFFSET
     )
 
     resignContainer = Container(buttonWidth, Constants.RESIGN_CONTAINER_HEIGHT)
@@ -116,7 +137,7 @@ def getSidePanelContainer(game) -> Container:
     sidePanelContainer.addContainer(
         outerLoggingContainer, 
         Constants.LOGGING_CONTAINER_BUFFER, 
-        Constants.TURN_CONTAINER_HEIGHT + Constants.UNDO_CONTAINER_HEIGHT + 2 * Constants.BUTTON_OFFSET
+        Constants.TURN_CONTAINER_HEIGHT + Constants.TIMER_HEIGHT + Constants.UNDO_CONTAINER_HEIGHT + 2 * Constants.BUTTON_OFFSET
     )
 
     outerLoggingContainer.addContainer(

@@ -1,3 +1,5 @@
+from src.Timer import Timer
+
 import chess
 
 class AIBase:
@@ -9,5 +11,5 @@ class AIBase:
     # See https://python-chess.readthedocs.io/en/latest/core.html#moves
     # The list of strings is for logging AI information in the side panel of the UI.
     # If no logging is desired, an empty list can be returned.
-    def getMove(self, board : chess.Board) -> tuple[chess.Move, list[str]]:
+    def getMove(self, board : chess.Board, timer : Timer) -> "tuple[chess.Move, list[str]]":
         pass

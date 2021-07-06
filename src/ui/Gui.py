@@ -20,7 +20,7 @@ class Gui:
 
         self.mainContainer = None
 
-    def renderGameArea(self, board : chess.Board, highlightSquares : list[chess.Square], whiteOrientation : bool = True, checkSquare : chess.Square = None) -> None:
+    def renderGameArea(self, board : chess.Board, highlightSquares : "list[chess.Square]", whiteOrientation : bool = True, checkSquare : chess.Square = None) -> None:
         self.__drawBoard()
         self.__addBoardLabels(whiteOrientation)
         self.__drawPieces(board, whiteOrientation)
@@ -95,7 +95,7 @@ class Gui:
             yPosition = (Constants.NUM_TILES - 1) * squareSize + textOffsetFileY
             self.screen.blit(textSurface, (xPosition, yPosition))
 
-    def __getCoordinatesFromSquare(self, square : chess.Square, whiteOrientation : bool = True) -> tuple[int, int]:
+    def __getCoordinatesFromSquare(self, square : chess.Square, whiteOrientation : bool = True) -> "tuple[int, int]":
         """
         Converts a chess.Square representation to an (x, y) grid location in the current orientation
         """
@@ -108,7 +108,7 @@ class Gui:
 
         return (column, row)
 
-    def __drawHighlight(self, squares : list[chess.Square], whiteOrientation : bool = True, checkSquare : chess.Square = None) -> None:
+    def __drawHighlight(self, squares : "list[chess.Square]", whiteOrientation : bool = True, checkSquare : chess.Square = None) -> None:
         squareSize = Constants.BOARD_SIZE / Constants.NUM_TILES
         if checkSquare != None:
             column, row = self.__getCoordinatesFromSquare(checkSquare, whiteOrientation)
@@ -119,7 +119,7 @@ class Gui:
                 column, row = self.__getCoordinatesFromSquare(square, whiteOrientation)
                 self.__drawOutline(column * squareSize, row * squareSize, squareSize, Constants.COLOR_BOARD_HIGHLIGHT)
 
-    def __drawOutline(self, x : int, y : int, size : int, color : tuple[int, int, int]) -> None:
+    def __drawOutline(self, x : int, y : int, size : int, color : "tuple[int, int, int]") -> None:
         rectangles = [
             [x, y, size, Constants.HIGHLIGHT_WIDTH],
             [x, y, Constants.HIGHLIGHT_WIDTH, size],
